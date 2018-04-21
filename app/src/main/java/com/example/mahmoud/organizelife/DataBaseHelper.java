@@ -63,7 +63,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             return true;
         }
     }
-
+    public ArrayList<row_transcation> getDataForCurrentDay()
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+        String currentDate = sdf.format(new Date());
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT "+COL2+", " + COL5 +" FROM " + TABLE_NAME +" WHERE "+COL4+" = '"+currentDate+"'";
+        Cursor data = db.rawQuery(query, null);
+        ArrayList<row_transcation> da = new ArrayList<row_transcation>();
+        while(data.moveToNext())
+        {
+            row_transcation r = new row_transcation(data.getString(0),data.getDouble(1));
+            da.add(r);
+        }
+        return da;
+    }
     public Cursor getData(){
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME;
@@ -81,6 +95,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "DELETE FROM " + TABLE_NAME;
+        db.execSQL(query);
+    }
+    public void deleteAllRowsForCurrent()
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+        String currentDate = sdf.format(new Date());
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "DELETE FROM " + TABLE_NAME+" WHERE "+COL4 + " = '"+currentDate+"'";
         db.execSQL(query);
     }
     public double getAllDurationForCurrentDay()

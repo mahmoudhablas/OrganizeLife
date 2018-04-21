@@ -1,5 +1,7 @@
 package com.example.mahmoud.organizelife;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -7,9 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -18,10 +24,13 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
+
 import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -40,7 +49,7 @@ public class TimeActivity extends AppCompatActivity {
     PieChart mDaychart;
     BarChart mWeekChart;
     Button btDelete;
-    TextView mInfoPieChart;
+    ListView mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +60,9 @@ public class TimeActivity extends AppCompatActivity {
         btDelete = (Button) findViewById(R.id.delete);
         mDaychart = (PieChart) findViewById(R.id.dayPieChart);
         mWeekChart = (BarChart) findViewById(R.id.weekBarChart);
-        mInfoPieChart = (TextView)findViewById(R.id.infoPieChart);
         updateCharts();
-        updateTextView();
+        mList = (ListView)findViewById(R.id.list_transcation);
+        mList.setAdapter(new ListResource(this,(Activity)this));
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,15 +82,10 @@ public class TimeActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateCharts();
-        updateTextView();
     }
 
     public void delete() {
         myDataBase.deleteAllRows();
-    }
-    public void updateTextView()
-    {
-        mInfoPieChart.setText("Usefull Time is: "+usefulTime+"\n unusefull Time is: "+(24-usefulTime));
     }
     int dayofweek(int d, int m, int y) {
         int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
@@ -103,8 +107,11 @@ public class TimeActivity extends AppCompatActivity {
         Log.d("Adding", "addDataSet of BarChart started");
         String[] strDays = new String[]{"Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday"};
         ArrayList<BarEntry> yEntrys = new ArrayList<>();
-        ArrayList<String> xEntrys = new ArrayList<>();
+        ArrayList<String> xEntrys = new ArrayList<String>();
         ArrayList<Pair<String, Double>> data = myDataBase.getAllSubjectForCurrentWeek();
+        for (int i = 0; i < strDays.length; i++) {
+            xEntrys.add(strDays[i]);
+        }
         for (int k = 0;k<7;k++)
         {
             yEntrys.add(new BarEntry(k, 0));
@@ -118,13 +125,7 @@ public class TimeActivity extends AppCompatActivity {
                 int d = Integer.parseInt(dates[2]);
                 int dayOfWeek = dayofweek(y, m, d);
                 float x = (float) data.get(i).second.doubleValue();
-                yEntrys.set(dayOfWeek,new BarEntry(dayOfWeek,x));
-//                if (dayOfWeek != i + 1) {
-//                    float x = (float) data.get(i).second.doubleValue();
-//                    yEntrys.add(new BarEntry(i, x));
-//                } else {
-//                    yEntrys.add(new BarEntry(i, 0));
-//                }
+                yEntrys.set(dayOfWeek,new BarEntry(x,dayOfWeek));
             }
             for (int j = 0; j< 7;j++)
             {
@@ -134,9 +135,8 @@ public class TimeActivity extends AppCompatActivity {
                 }
             }
             BarDataSet barDataSet = new BarDataSet(yEntrys, "Subjects Schedule");
-            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
             barDataSet.setDrawValues(true);
-            BarData dt = new BarData(barDataSet);
+            BarData dt = new BarData(xEntrys,barDataSet);
             mWeekChart.setData(dt);
             mWeekChart.invalidate();
             mWeekChart.animateY(500);
@@ -146,16 +146,16 @@ public class TimeActivity extends AppCompatActivity {
 
     private void addDataSetPieChart() {
         Log.d("Adding", "addDataSet of PieChart started");
-        ArrayList<PieEntry> yEntrys = new ArrayList<>();
+        ArrayList<Entry> yEntrys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<String>();
         double duartionOfUsfulSubject = myDataBase.getAllDurationForCurrentDay();
         usefulTime = duartionOfUsfulSubject;
         float[] yData = {(float) duartionOfUsfulSubject, (float) (24 - duartionOfUsfulSubject)};
         for (int i = 0; i < yData.length; i++) {
-            yEntrys.add(new PieEntry(yData[i], i));
+            yEntrys.add(new Entry(yData[i], i));
         }
 
-        for (int i = 1; i < xData.length; i++) {
+        for (int i = 0; i < xData.length; i++) {
             xEntrys.add(xData[i]);
         }
 
@@ -176,9 +176,58 @@ public class TimeActivity extends AppCompatActivity {
         legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
         legend.setEnabled(true);
         //create pie data object
-        PieData pieData = new PieData(pieDataSet);
+        PieData pieData = new PieData(xEntrys,pieDataSet);
         mDaychart.setData(pieData);
+        mDaychart.setUsePercentValues(true);
         mDaychart.invalidate();
     }
 
+}
+class ListResource extends BaseAdapter{
+
+    ArrayList<row_transcation>rows;
+    Context context;
+    DataBaseHelper myDataBase;
+    Activity mActivity;
+    ListResource(Context cont , Activity a)
+    {
+        this.context = cont;
+        this.mActivity = a;
+        myDataBase = new DataBaseHelper(this.context);
+        rows = myDataBase.getDataForCurrentDay();
+    }
+    @Override
+    public int getCount() {
+        return rows.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return rows.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View r = inflater.inflate(R.layout.row_transaction,parent,false);
+        TextView mSubject = (TextView) r.findViewById(R.id.subject);
+        TextView mDuration = (TextView) r.findViewById(R.id.duration);
+        Button d = (Button) r.findViewById(R.id.delete);
+        row_transcation rw = rows.get(position);
+        mSubject.setText(rw.getSubject());
+        mDuration.setText(""+rw.getDuration());
+        d.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDataBase.deleteAllRowsForCurrent();
+            }
+        });
+
+        return r;
+    }
 }
