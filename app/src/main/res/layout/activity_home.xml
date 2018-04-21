@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mahmoud.organizelife.HomeActivity">
+
+    <Button
+        android:id="@+id/saveTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Time"
+        tools:layout_editor_absoluteX="113dp"
+        tools:layout_editor_absoluteY="164dp" />
+
+    <Button
+        android:id="@+id/saveMoney"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Money"
+        tools:layout_editor_absoluteX="122dp"
+        tools:layout_editor_absoluteY="302dp" />
+</LinearLayout>
