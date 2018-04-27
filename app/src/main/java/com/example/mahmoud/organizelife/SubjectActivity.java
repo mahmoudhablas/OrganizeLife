@@ -20,6 +20,8 @@ public class SubjectActivity extends AppCompatActivity {
     EditText mNote,mSubject,mDuration ;
     Button btAdd;
     DataBaseHelper myDataBase;
+    int id = 0;
+    boolean isEdit = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +37,24 @@ public class SubjectActivity extends AppCompatActivity {
                 addSubject();
             }
         });
+        isEdit = false;
+        Intent info = getIntent();
+        if (info.getStringExtra("subject") != null)
+        {
+            String subject = info.getStringExtra("subject");
+            String duration = info.getStringExtra("duration");
+            String note = info.getStringExtra("note");
+            id = info.getIntExtra("id",0);
+            isEdit = true;
+            btAdd.setText("Edit");
+            setTexts(subject,duration,note);
+        }
+    }
+    public void setTexts(String subject,String duration, String note)
+    {
+        mSubject.setText(subject);
+        mDuration.setText(duration);
+        mNote.setText(note);
     }
     private void toastMessage(String message){
         Toast.makeText(this,message, Toast.LENGTH_SHORT).show();
@@ -55,13 +75,21 @@ public class SubjectActivity extends AppCompatActivity {
             toastMessage("Subject and Duration Fields are required");
             return;
         }
-        boolean result = myDataBase.addData(subject,note,duration);
-        if (result)
+        if(!isEdit)
         {
-            Log.d("Result ","Is OK ");
+            boolean result = myDataBase.addData(subject,note,duration);
+            if (result)
+            {
+                Log.d("Result ","Is OK ");
+            }
+            Intent i = new Intent(this,TimeActivity.class);
+            startActivity(i);
+        }else{
+            myDataBase.editData(id,subject,duration+"",note);
+
+            Intent i = new Intent(this,ContentOFDayActivity.class);
+            startActivity(i);
         }
-        Intent i = new Intent(this,TimeActivity.class);
-        startActivity(i);
 
     }
 

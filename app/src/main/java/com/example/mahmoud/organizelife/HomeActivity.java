@@ -5,19 +5,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class HomeActivity extends AppCompatActivity {
-    Button saveTime,saveMoney;
+    ImageButton saveTime,saveMoney;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        saveTime = findViewById(R.id.saveTime);
-        saveMoney = findViewById(R.id.saveMoney);
+        saveTime = (ImageButton) findViewById(R.id.saveTime);
+        saveMoney = (ImageButton)findViewById(R.id.saveMoney);
         saveTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SaveTime();
+            }
+        });
+        saveMoney.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SaveMoney();
             }
         });
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +14,11 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -48,8 +52,7 @@ public class TimeActivity extends AppCompatActivity {
     DataBaseHelper myDataBase;
     PieChart mDaychart;
     BarChart mWeekChart;
-    Button btDelete;
-    ListView mList;
+    Button btDelete,mShowSubjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +61,16 @@ public class TimeActivity extends AppCompatActivity {
         myDataBase = new DataBaseHelper(this);
         btAdd = (ImageButton) findViewById(R.id.add);
         btDelete = (Button) findViewById(R.id.delete);
+        mShowSubjects = (Button)findViewById(R.id.showSubjects);
         mDaychart = (PieChart) findViewById(R.id.dayPieChart);
         mWeekChart = (BarChart) findViewById(R.id.weekBarChart);
         updateCharts();
-        mList = (ListView)findViewById(R.id.list_transcation);
-        mList.setAdapter(new ListResource(this,(Activity)this));
+        mShowSubjects.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               showSubjects();
+            }
+        });
         btAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +91,11 @@ public class TimeActivity extends AppCompatActivity {
         super.onResume();
         updateCharts();
     }
-
+    public void showSubjects()
+    {
+        Intent i = new Intent(this , ContentOFDayActivity.class);
+        startActivity(i);
+    }
     public void delete() {
         myDataBase.deleteAllRows();
     }
@@ -105,34 +117,22 @@ public class TimeActivity extends AppCompatActivity {
 
     private void addDateSetBarChart() {
         Log.d("Adding", "addDataSet of BarChart started");
-        String[] strDays = new String[]{"Friday", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday"};
+        String[] strDays = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thusday","Friday", "Saturday" };
         ArrayList<BarEntry> yEntrys = new ArrayList<>();
         ArrayList<String> xEntrys = new ArrayList<String>();
-        ArrayList<Pair<String, Double>> data = myDataBase.getAllSubjectForCurrentWeek();
+        ArrayList<Pair<Integer, Double>> data = myDataBase.getAllSubjectForCurrentWeek();
         for (int i = 0; i < strDays.length; i++) {
             xEntrys.add(strDays[i]);
         }
         for (int k = 0;k<7;k++)
         {
-            yEntrys.add(new BarEntry(k, 0));
+            yEntrys.add(new BarEntry(0,k));
         }
         if (data.size() != 0) {
             for (int i = 0; i < data.size(); i++) {
-                String h = data.get(i).first;
-                String[] dates = h.split("-");
-                int y = Integer.parseInt(dates[0]);
-                int m = Integer.parseInt(dates[1]);
-                int d = Integer.parseInt(dates[2]);
-                int dayOfWeek = dayofweek(y, m, d);
+                int dayNum = data.get(i).first;
                 float x = (float) data.get(i).second.doubleValue();
-                yEntrys.set(dayOfWeek,new BarEntry(x,dayOfWeek));
-            }
-            for (int j = 0; j< 7;j++)
-            {
-                if(yEntrys.get(j) == null)
-                {
-                    yEntrys.set(j,new BarEntry(j,0));
-                }
+                yEntrys.set(dayNum,new BarEntry(x,dayNum));
             }
             BarDataSet barDataSet = new BarDataSet(yEntrys, "Subjects Schedule");
             barDataSet.setDrawValues(true);
@@ -183,18 +183,98 @@ public class TimeActivity extends AppCompatActivity {
     }
 
 }
-class ListResource extends BaseAdapter{
+class ListResource extends ArrayAdapter<row_transcation>{
+
+    DataBaseHelper mDataBaseTime;
+    DataBaseHelperMoney mDataBaseMoney;
+    public ListResource(@NonNull Context context, ArrayList<row_transcation> resource) {
+        super(context,R.layout.row_transaction ,resource);
+        mDataBaseMoney=null;
+        mDataBaseTime=null;
+
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        LayoutInflater m = LayoutInflater.from(getContext());
+        View customView = m.inflate(R.layout.row_transaction,parent,false);
+        final row_transcation da = getItem(position);
+        TextView subject = (TextView) customView.findViewById(R.id.subject);
+        TextView duration = (TextView)customView.findViewById(R.id.duration);
+        Button delete = (Button) customView.findViewById(R.id.delete);
+        Button edit = (Button) customView.findViewById(R.id.edit);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataBaseTime != null)
+                {
+                  mDataBaseTime.delete(da.getId());
+                }else if(mDataBaseMoney != null)
+                {
+                    mDataBaseMoney.delete(da.getId());
+                }
+                notifyDataSetChanged();
+
+            }
+        });
+        if (da.getType().equals("income"))
+        {
+            mDataBaseMoney = new DataBaseHelperMoney(this.getContext());
+            customView.setBackgroundColor(Color.parseColor("#e70f0f"));
+
+        }else if(da.getType().equals("expense"))
+        {
+            mDataBaseMoney = new DataBaseHelperMoney(this.getContext());
+            customView.setBackgroundColor(Color.parseColor("#33FF42"));
+        }else{
+            mDataBaseTime = new DataBaseHelper(this.getContext());
+        }
+        subject.setText(da.getSubject());
+        duration.setText(""+da.getDuration());
+
+        return customView;
+    }
+}
+class mListResource extends BaseAdapter{
 
     ArrayList<row_transcation>rows;
     Context context;
-    DataBaseHelper myDataBase;
+    DataBaseHelper myDataBaseTime;
+    DataBaseHelperMoney myDataBaseMoney;
     Activity mActivity;
-    ListResource(Context cont , Activity a)
+    mListResource(Context cont ,Activity a,DataBaseHelper myDataBaseTime)
+    {
+        this.context = cont;
+        myDataBaseTime = new DataBaseHelper(this.context);
+        this.mActivity = a;
+        rows = myDataBaseTime.getDataForCurrentDay();
+    }
+    public void navigateToTimeActivity(String subject,String duration,String note,int id )
+    {
+        Intent i = new Intent(this.mActivity, SubjectActivity.class);
+        i.putExtra("subject",subject);
+        i.putExtra("duration",duration);
+        i.putExtra("note",note);
+        i.putExtra("id",id);
+        this.mActivity.startActivity(i);
+    }
+    public void navigateToMoneyActivity(String transaction ,String amount ,String note,int id,String type)
+    {
+        Intent i = new Intent(this.mActivity, IncomeAndExpenseActivity.class);
+        i.putExtra("transaction",transaction);
+        i.putExtra("amount",amount);
+        i.putExtra("note",note);
+        i.putExtra("id",id);
+        i.putExtra("type",type);
+        this.mActivity.startActivity(i);
+    }
+    mListResource(Context cont ,Activity a,DataBaseHelperMoney myDataBaseMoney)
     {
         this.context = cont;
         this.mActivity = a;
-        myDataBase = new DataBaseHelper(this.context);
-        rows = myDataBase.getDataForCurrentDay();
+        myDataBaseMoney = new DataBaseHelperMoney(this.context);
+        rows = myDataBaseMoney.getTransactionsForCurrentMonth();
     }
     @Override
     public int getCount() {
@@ -202,32 +282,74 @@ class ListResource extends BaseAdapter{
     }
 
     @Override
-    public Object getItem(int position) {
+    public row_transcation getItem(int position) {
         return rows.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        return rows.indexOf(getItem(position));
+
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View r = inflater.inflate(R.layout.row_transaction,parent,false);
-        TextView mSubject = (TextView) r.findViewById(R.id.subject);
-        TextView mDuration = (TextView) r.findViewById(R.id.duration);
-        Button d = (Button) r.findViewById(R.id.delete);
-        row_transcation rw = rows.get(position);
-        mSubject.setText(rw.getSubject());
-        mDuration.setText(""+rw.getDuration());
-        d.setOnClickListener(new View.OnClickListener() {
+        convertView = inflater.inflate(R.layout.row_transaction, parent, false);
+        final  row_transcation da = getItem(position);
+        final TextView subject = (TextView) convertView.findViewById(R.id.subject);
+        final TextView duration = (TextView)convertView.findViewById(R.id.duration);
+        final TextView note = (TextView)convertView.findViewById(R.id.note);
+        Button delete = (Button) convertView.findViewById(R.id.delete);
+        Button edit = (Button) convertView.findViewById(R.id.edit);
+        delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myDataBase.deleteAllRowsForCurrent();
+                if (myDataBaseTime != null)
+                {
+                    myDataBaseTime.delete(da.getId());
+                    rows = myDataBaseTime.getDataForCurrentDay();
+                    notifyDataSetChanged();
+                }else if(myDataBaseMoney != null)
+                {
+                    myDataBaseMoney.delete(da.getId());
+                    rows = myDataBaseMoney.getTransactionsForCurrentMonth();
+                    notifyDataSetChanged();
+                }
+
+
             }
         });
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myDataBaseTime != null)
+                {
+                    row_transcation data = myDataBaseTime.getData(da.getId());
+                    navigateToTimeActivity(data.getSubject(),""+data.getDuration(),data.getNote(),da.getId());
+                }else if(myDataBaseMoney != null)
+                {
+                    row_transcation data = myDataBaseMoney.getData(da.getId());
+                    navigateToMoneyActivity(data.getSubject(),""+data.getDuration(),data.getNote(),da.getId(),da.getType());
+                }
 
-        return r;
+            }
+        });
+        if (da.getType().equals("income"))
+        {
+            myDataBaseMoney = new DataBaseHelperMoney(this.context);
+            convertView.setBackgroundColor(Color.parseColor("#e70f0f"));
+
+        }else if(da.getType().equals("expense"))
+        {
+            myDataBaseMoney = new DataBaseHelperMoney(this.context);
+            convertView.setBackgroundColor(Color.parseColor("#33FF42"));
+        }else{
+            myDataBaseTime = new DataBaseHelper(this.context);
+        }
+        subject.setText(da.getSubject());
+        duration.setText(""+da.getDuration());
+
+        return convertView;
     }
 }

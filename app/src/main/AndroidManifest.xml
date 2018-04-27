@@ -18,7 +18,10 @@
         </activity>
         <activity android:name=".MoneyActivity" />
         <activity android:name=".TimeActivity" />
-        <activity android:name=".SubjectActivity"></activity>
+        <activity android:name=".SubjectActivity" />
+        <activity android:name=".ContentOFDayActivity" />
+        <activity android:name=".IncomeAndExpenseActivity" />
+        <activity android:name=".ContentOfMonthActivity"></activity>
     </application>
 
 </manifest>

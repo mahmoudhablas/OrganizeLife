@@ -4,21 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mahmoud.organizelife.HomeActivity">
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context="com.example.mahmoud.organizelife.HomeActivity"
+    android:id="@+id/relativeLayout">
 
-    <Button
-        android:id="@+id/saveTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Time"
-        tools:layout_editor_absoluteX="113dp"
-        tools:layout_editor_absoluteY="164dp" />
+    <TextView
+        android:id="@+id/textMoney"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#fdfcfc"
+        android:gravity="center_horizontal"
+        android:shadowColor="#aeabab"
+        android:text="Control Your Money"
+        android:textColor="#9c0414"
+        android:textSize="30sp"
+        android:typeface="serif" />
 
-    <Button
+    <ImageButton
         android:id="@+id/saveMoney"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save Money"
-        tools:layout_editor_absoluteX="122dp"
-        tools:layout_editor_absoluteY="302dp" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:elevation="4dp"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp"
+        android:src="@drawable/savemoney"
+        android:text="Save Time"
+ />
+
+    <TextView
+        android:id="@+id/textTime"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#fdfcfc"
+        android:shadowColor="#aeabab"
+        android:gravity="center_horizontal"
+        android:text="Control Your Time"
+        android:textColor="#9c0414"
+        android:textSize="30sp"
+        android:typeface="serif" />
+
+    <ImageButton
+        android:id="@+id/saveTime"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:elevation="4dp"
+        android:src="@drawable/savetime"
+        android:text="Save Money" />
 </LinearLayout>
