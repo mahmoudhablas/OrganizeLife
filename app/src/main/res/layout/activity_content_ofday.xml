@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
     tools:context="com.example.mahmoud.organizelife.ContentOFDayActivity">
     <ListView
         android:id="@+id/list_transcation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"></ListView>
+        android:layout_marginTop="@dimen/margin"></ListView>
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/heightButton"
+        android:text="@string/textOfDeleteButtonTime"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/backgroundOfDeleteButton"
+        android:elevation="@dimen/elevation"
+        android:paddingLeft="@dimen/paddingButtonLeft"
+        android:paddingRight="@dimen/paddingButtonRight"
+        android:textColor="#fff" />
 
-</android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

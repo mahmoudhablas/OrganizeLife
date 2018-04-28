@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#bab6b6"
+    android:background="@color/background"
     tools:context="com.example.mahmoud.organizelife.TimeActivity">
 
     <ScrollView
@@ -20,84 +20,44 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textPieChart"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:background="#fdfcfc"
-                android:gravity="center_horizontal"
-                android:paddingBottom="10dp"
-                android:shadowColor="#aeabab"
-                android:text="PieChart for Today"
-                android:textColor="#9c0414"
-                android:textSize="30sp"
-                android:typeface="serif" />
-
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/dayPieChart"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#fdfcfc"></com.github.mikephil.charting.charts.PieChart>
+                android:layout_height="@dimen/heightOfPieChart"
+                android:layout_marginBottom="@dimen/margin"
+                android:layout_marginTop="@dimen/margin"
+                android:background="@color/backGroundOfPieChart">
 
-            <TextView
-                android:id="@+id/textBarChart"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#fdfcfc"
-                android:gravity="center_horizontal"
-                android:paddingBottom="10dp"
-                android:shadowColor="#aeabab"
-                android:text="BarChart for Week"
-                android:textColor="#9c0414"
-                android:textSize="30sp"
-                android:typeface="serif" />
+            </com.github.mikephil.charting.charts.PieChart>
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/weekBarChart"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:background="#fdfcfc"></com.github.mikephil.charting.charts.BarChart>
+                android:layout_height="@dimen/heightOfPieChart"
+                android:layout_marginBottom="@dimen/margin"
+                android:layout_marginTop="@dimen/margin"
+                android:background="@color/backGroundOfPieChart">
+
+            </com.github.mikephil.charting.charts.BarChart>
             <Button
                 android:id="@+id/showSubjects"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:text="Show Subjects of Today"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/heightButton"
+                android:text="@string/textOfShowSubjects"
+                android:layout_marginBottom="@dimen/margin"
+                android:layout_marginTop="@dimen/margin"
                 android:layout_gravity="center_horizontal"
-                android:background="@color/colorPrimaryDark"
-                android:elevation="4dp"
-                android:paddingLeft="70dp"
-                android:paddingRight="70dp"
-                android:textColor="#fff"/>
-            <Button
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:text="Delete All Subjects"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_gravity="center_horizontal"
-                android:background="#d60303"
-                android:elevation="4dp"
-                android:paddingLeft="70dp"
-                android:paddingRight="70dp"
-                android:textColor="#fff" />
-
+                android:background="@color/myPriColor"
+                android:elevation="@dimen/elevation"
+                android:paddingLeft="@dimen/paddingButtonLeft"
+                android:paddingRight="@dimen/paddingButtonRight"
+                android:textColor="@color/textColor"/>
         </LinearLayout>
     </ScrollView>
     <ImageButton
         android:id="@+id/add"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/floatingButtonSize"
+        android:layout_height="@dimen/floatingButtonSize"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

@@ -1,57 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/background"
     tools:context="com.example.mahmoud.organizelife.HomeActivity"
     android:id="@+id/relativeLayout">
 
     <TextView
         android:id="@+id/textMoney"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#fdfcfc"
+        android:layout_height="@dimen/heightText"
         android:gravity="center_horizontal"
-        android:shadowColor="#aeabab"
-        android:text="Control Your Money"
-        android:textColor="#9c0414"
-        android:textSize="30sp"
+        android:text="@string/textOfMoney"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/textSize"
         android:typeface="serif" />
 
     <ImageButton
         android:id="@+id/saveMoney"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:elevation="4dp"
-        android:paddingLeft="70dp"
-        android:paddingRight="70dp"
+        android:layout_width="@dimen/imageButtonSize"
+        android:layout_height="@dimen/imageButtonSize"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginTop="@dimen/margin"
+        android:elevation="@dimen/elevation"
+        android:paddingLeft="@dimen/paddingButtonLeft"
+        android:paddingRight="@dimen/paddingButtonRight"
         android:src="@drawable/savemoney"
-        android:text="Save Time"
  />
 
     <TextView
         android:id="@+id/textTime"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#fdfcfc"
-        android:shadowColor="#aeabab"
+        android:layout_height="@dimen/heightText"
         android:gravity="center_horizontal"
-        android:text="Control Your Time"
-        android:textColor="#9c0414"
-        android:textSize="30sp"
+        android:text="@string/textOfTime"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/textSize"
         android:typeface="serif" />
 
     <ImageButton
         android:id="@+id/saveTime"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:elevation="4dp"
-        android:src="@drawable/savetime"
-        android:text="Save Money" />
+        android:layout_width="@dimen/imageButtonSize"
+        android:layout_height="@dimen/imageButtonSize"
+        android:elevation="@dimen/elevation"
+        android:src="@drawable/savetime" />
 </LinearLayout>

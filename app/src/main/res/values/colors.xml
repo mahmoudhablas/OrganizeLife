@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#05a80d</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="myPriColor">#1b5e20</color>
+    <color name="myPriDarkColor">#003300</color>
+    <color name="backgroundOfDeleteButton">#d60303</color>
+    <color name="textColor">#fff</color>
+    <color name="background">#4c8c4a</color>
+    <color name="backGroundOfPieChart">#fff</color>
 </resources>

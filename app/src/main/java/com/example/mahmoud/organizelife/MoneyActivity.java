@@ -30,18 +30,17 @@ public class MoneyActivity extends AppCompatActivity {
     private String[] xData = {TAG1, TAG2};
     ImageButton btAdd;
     DataBaseHelperMoney myDataBase;
-    PieChart mDaychart;
+    PieChart mMonthChart;
     BarChart mWeekChart;
-    Button btDelete,mShowTransactions;
+    Button mShowTransactions;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_money);
         myDataBase = new DataBaseHelperMoney(this);
         btAdd = (ImageButton) findViewById(R.id.add);
-        btDelete = (Button) findViewById(R.id.delete);
         mShowTransactions = (Button)findViewById(R.id.showSubjects);
-        mDaychart = (PieChart) findViewById(R.id.dayPieChart);
+        mMonthChart = (PieChart) findViewById(R.id.dayPieChart);
         mWeekChart = (BarChart) findViewById(R.id.weekBarChart);
         updateCharts();
         mShowTransactions.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +55,6 @@ public class MoneyActivity extends AppCompatActivity {
                 addExpenseOrIncome();
             }
         });
-
 
     }
     @Override
@@ -99,6 +97,10 @@ public class MoneyActivity extends AppCompatActivity {
             BarDataSet barDataSet = new BarDataSet(yEntrys, "Subjects Schedule");
             barDataSet.setDrawValues(true);
             BarData dt = new BarData(xEntrys,barDataSet);
+            mWeekChart.setDescription("BarChart for this week ");
+            mWeekChart.setDescriptionTextSize(16f);
+            mWeekChart.setDescriptionPosition(1050,650);
+            mWeekChart.getLegend().setTextSize(16f);
             mWeekChart.setData(dt);
             mWeekChart.invalidate();
             mWeekChart.animateY(500);
@@ -131,15 +133,20 @@ public class MoneyActivity extends AppCompatActivity {
         pieDataSet.setColors(colors);
 
         //add legend to chart
-        Legend legend = mDaychart.getLegend();
+        Legend legend = mMonthChart.getLegend();
         legend.setForm(Legend.LegendForm.CIRCLE);
         legend.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
         legend.setEnabled(true);
         //create pie data object
         PieData pieData = new PieData(xEntrys,pieDataSet);
-        mDaychart.setData(pieData);
-        mDaychart.setUsePercentValues(true);
-        mDaychart.invalidate();
+        mMonthChart.setDescription("PieChart for this month");
+        mMonthChart.setDescriptionPosition(1050,550);
+        mMonthChart.setDescriptionTextSize(16f);
+        mMonthChart.getLegend().setTextSize(16f);
+        mMonthChart.setData(pieData);
+        mMonthChart.getLegend().setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
+        mMonthChart.setUsePercentValues(true);
+        mMonthChart.invalidate();
     }
 
 }

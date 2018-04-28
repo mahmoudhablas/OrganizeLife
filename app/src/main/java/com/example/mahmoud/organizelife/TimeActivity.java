@@ -52,7 +52,7 @@ public class TimeActivity extends AppCompatActivity {
     DataBaseHelper myDataBase;
     PieChart mDaychart;
     BarChart mWeekChart;
-    Button btDelete,mShowSubjects;
+    Button mShowSubjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,6 @@ public class TimeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_time);
         myDataBase = new DataBaseHelper(this);
         btAdd = (ImageButton) findViewById(R.id.add);
-        btDelete = (Button) findViewById(R.id.delete);
         mShowSubjects = (Button)findViewById(R.id.showSubjects);
         mDaychart = (PieChart) findViewById(R.id.dayPieChart);
         mWeekChart = (BarChart) findViewById(R.id.weekBarChart);
@@ -77,12 +76,7 @@ public class TimeActivity extends AppCompatActivity {
                 addUsefuelSubject();
             }
         });
-        btDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delete();
-            }
-        });
+
 
     }
 
@@ -95,9 +89,6 @@ public class TimeActivity extends AppCompatActivity {
     {
         Intent i = new Intent(this , ContentOFDayActivity.class);
         startActivity(i);
-    }
-    public void delete() {
-        myDataBase.deleteAllRows();
     }
     int dayofweek(int d, int m, int y) {
         int t[] = {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
@@ -137,8 +128,12 @@ public class TimeActivity extends AppCompatActivity {
             BarDataSet barDataSet = new BarDataSet(yEntrys, "Subjects Schedule");
             barDataSet.setDrawValues(true);
             BarData dt = new BarData(xEntrys,barDataSet);
+            mWeekChart.setDescriptionTextSize(16f);
+            mWeekChart.setDescriptionPosition(1050,650);
+            mWeekChart.getLegend().setTextSize(16f);
             mWeekChart.setData(dt);
             mWeekChart.invalidate();
+            mWeekChart.setDescription("BarChart for this week ");
             mWeekChart.animateY(500);
         }
 
@@ -177,6 +172,11 @@ public class TimeActivity extends AppCompatActivity {
         legend.setEnabled(true);
         //create pie data object
         PieData pieData = new PieData(xEntrys,pieDataSet);
+        mDaychart.setDescription("PieChart for this day");
+        mDaychart.setDescriptionPosition(1050,550);
+        mDaychart.setDescriptionTextSize(16f);
+        mDaychart.getLegend().setTextSize(16f);
+        mDaychart.getLegend().setPosition(Legend.LegendPosition.RIGHT_OF_CHART_CENTER);
         mDaychart.setData(pieData);
         mDaychart.setUsePercentValues(true);
         mDaychart.invalidate();
@@ -300,6 +300,7 @@ class mListResource extends BaseAdapter{
         final TextView subject = (TextView) convertView.findViewById(R.id.subject);
         final TextView duration = (TextView)convertView.findViewById(R.id.duration);
         final TextView note = (TextView)convertView.findViewById(R.id.note);
+        final TextView type = (TextView)convertView.findViewById(R.id.type);
         Button delete = (Button) convertView.findViewById(R.id.delete);
         Button edit = (Button) convertView.findViewById(R.id.edit);
         delete.setOnClickListener(new View.OnClickListener() {
@@ -338,17 +339,20 @@ class mListResource extends BaseAdapter{
         if (da.getType().equals("income"))
         {
             myDataBaseMoney = new DataBaseHelperMoney(this.context);
-            convertView.setBackgroundColor(Color.parseColor("#e70f0f"));
+            type.setText("Income");
+            duration.setText(""+da.getDuration());
 
         }else if(da.getType().equals("expense"))
         {
             myDataBaseMoney = new DataBaseHelperMoney(this.context);
-            convertView.setBackgroundColor(Color.parseColor("#33FF42"));
+            type.setText("expense");
+            duration.setText(""+da.getDuration());
         }else{
             myDataBaseTime = new DataBaseHelper(this.context);
+            type.setText("");
+            duration.setText(""+da.getDuration()+"h");
         }
         subject.setText(da.getSubject());
-        duration.setText(""+da.getDuration());
 
         return convertView;
     }

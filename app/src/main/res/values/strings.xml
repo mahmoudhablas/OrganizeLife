@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">OrganizeLife</string>
+    <string name="textOfDeleteButtonTime">Delete All Subjects</string>
+    <string name="textOfMoney">Control Your Money</string>
+    <string name="textOfTime">Control Your Time</string>
+    <string name="textOfAdding">Add Your Subject</string>
+    <string name="textOfButtonSave">Save</string>
+    <string name="textOfShowTransactions">Show Transaction of Today</string>
+    <string name="textOfShowSubjects">Show Subjects of Today</string>
+
 </resources>
